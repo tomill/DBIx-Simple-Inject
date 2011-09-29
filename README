@@ -1,0 +1,11 @@
+This is Perl module DBIx::Simple::Inject.
+
+DOCUMENTATION
+
+DBIx::Simple::Inject documentation is available as in POD. So you can do:
+
+    % perldoc DBIx::Simple::Inject
+
+to read the documentation online with your favorite pager.
+
+Naoki Tomita
