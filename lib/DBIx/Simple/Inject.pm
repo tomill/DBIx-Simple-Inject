@@ -9,16 +9,27 @@ package DBIx::Simple::Inject::db;
 use strict;
 our @ISA = qw(DBI::db);
 use DBIx::Simple;
+use Scalar::Util qw/weaken/;
 
 sub simple {
     my ($dbh) = @_;
-    $dbh->{private_dbixsimple} ||= DBIx::Simple->connect($dbh);
+    $dbh->{private_dbixsimple} ||= do {
+        my $s = DBIx::Simple->connect($dbh);
+        weaken($s->{dbh});
+        
+        for my $k (keys %{ $dbh->{private_dbixsimple_props} || {} }) {
+            my $v = $dbh->{private_dbixsimple_props}{$k};
+            $s->$k = ref $v eq 'CODE' ? $v->($dbh) : $v;
+        }
+        $s;
+    };
 }
 
 {
     no strict 'refs';
     for my $method (
         qw(
+            error
             query
             begin
             disconnect
@@ -26,9 +37,27 @@ sub simple {
             iquery
         ),
         # unnecessary begin_work(), commit(), rollback(), func() and last_insert_id()
-        # there are just alias
+        # there are just alias for DBI::db::*
     ) {
         *$method = sub { shift->simple->$method(@_) };
+    }
+    
+    for my $method (
+        qw(
+            keep_statements
+            lc_columns
+            result_class
+            abstract
+        ),
+    ) {
+        *$method = sub {
+            my ($self, $val) = @_;
+            if ($val) {
+                $self->simple->$method = $val;
+            } else {
+                $self->simple->$method;
+            }
+        };
     }
 }
 

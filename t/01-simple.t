@@ -36,6 +36,20 @@ ok($db->delete(foo => { id => 2 }), "delete()");
 
 ok($db->iquery('SELECT * FROM foo WHERE id = ', 1), "iquery()");
 
+eval {
+    $db->query("foo");
+};
+like($db->error, qr/foo/, "error()");
+
+ok($db->lc_columns("dummy"), "lc_columns() set");
+is($db->lc_columns, "dummy", "lc_columns() get");
+ok($db->keep_statements("dummy"), "keep_statements() set");
+is($db->keep_statements, "dummy", "keep_statements() get");
+ok($db->result_class("dummy"), "result_class() set");
+is($db->result_class, "dummy", "result_class() get");
+ok($db->abstract("dummy"), "abstract() set");
+is($db->abstract, "dummy", "abstract() get");
+
 ok($db->disconnect(), "disconnect()");
 
 done_testing;
