@@ -4,7 +4,7 @@ readme_from;
 
 requires 'DBI';
 requires 'DBIx::Simple';
-requires 'Scalar::Weaken';
+requires 'Scalar::Util';
 requires 'parent';
 
 test_requires 'Test::More' => 0.96; # subtest/done_testing

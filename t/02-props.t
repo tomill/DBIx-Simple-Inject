@@ -1,6 +1,10 @@
 use strict;
 use warnings;
 use Test::More tests => 6;
+use Test::Requires qw(
+    DBI
+    DBD::SQLite
+);
 
 use DBI;
 my $db = DBI->connect(
