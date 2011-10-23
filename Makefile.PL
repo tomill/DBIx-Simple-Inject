@@ -2,6 +2,7 @@ use inc::Module::Install;
 all_from 'lib/DBIx/Simple/Inject.pm';
 readme_from;
 
+requires 'Class::Load';
 requires 'DBI';
 requires 'DBIx::Simple';
 requires 'Scalar::Util';

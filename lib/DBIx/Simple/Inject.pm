@@ -8,21 +8,40 @@ use parent 'DBI';
 package DBIx::Simple::Inject::db;
 use strict;
 our @ISA = qw(DBI::db);
+
+use Class::Load;
 use DBIx::Simple;
 use Scalar::Util qw/weaken/;
 
 sub simple {
     my ($dbh) = @_;
     $dbh->{private_dbixsimple} ||= do {
-        my $s = DBIx::Simple->connect($dbh);
-        weaken($s->{dbh});
+        my $dbis = DBIx::Simple->connect($dbh);
+        weaken($dbis->{dbh});
         
         for my $k (keys %{ $dbh->{private_dbixsimple_props} || {} }) {
             my $v = $dbh->{private_dbixsimple_props}{$k};
-            $s->$k = ref $v eq 'CODE' ? $v->($dbh) : $v;
+            # lvalue method
+            $dbis->$k = ref $v eq 'CODE' ? $v->($dbh)
+                      : $k eq 'abstract' ? _abstract($dbis->{dbh}, $v) : $v;
         }
-        $s;
+        
+        $dbis;
     };
+}
+
+sub _abstract {
+    my ($dbh, $class) = @_;
+    Class::Load::load_class($class);
+    if ($class eq 'SQL::Abstract') {
+        $class->new();
+    } elsif ($class eq 'SQL::Abstract::Limit') {
+        $class->new(limit_dialect => $dbh);
+    } elsif ($class eq 'SQL::Maker') {
+        $class->new(driver => $dbh->{Driver});
+    } else {
+        $class->new($dbh); # fallback
+    }
 }
 
 {
@@ -65,6 +84,7 @@ package DBIx::Simple::Inject::st;
 our @ISA = qw(DBI::st);
 
 1;
+
 __END__
 
 =encoding utf-8
@@ -85,6 +105,7 @@ DBIx::Simple::Inject - Inject DBIx::Simple into DBI
       }
   );
   
+  $db->query('select * from foo where id = ?', 123);
   $db->insert(foo => {
       name => "John",
   });
