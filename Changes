@@ -1,4 +1,7 @@
 Revision history for Perl extension DBIx::Simple::Inject
 
+0.02  Wed Nov 30 16:17:59 JST 2011
+        - first CPAN release
+
 0.01  
         - original version
