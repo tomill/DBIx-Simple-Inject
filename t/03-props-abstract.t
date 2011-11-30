@@ -15,8 +15,8 @@ for my $abstract_class (qw/SQL::Abstract SQL::Abstract::Limit SQL::Maker/) {
     my $db = DBI->connect(
         'dbi:SQLite:dbname=:memory:', '', '', {
             RootClass => 'DBIx::Simple::Inject',
-            private_dbixsimple_props => {
-                abstract        => $abstract_class,
+            private_dbixsimple => {
+                abstract => $abstract_class,
             },
         }
     );

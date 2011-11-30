@@ -11,7 +11,7 @@ my $db = DBI->connect(
     'dbi:SQLite:dbname=:memory:', '', '', {
         RootClass => 'DBIx::Simple::Inject',
         
-        private_dbixsimple_props => {
+        private_dbixsimple => {
             lc_columns      => 0,
             keep_statements => 20,
             result_class    => 'MyApp::Result',
