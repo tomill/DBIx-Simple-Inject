@@ -1,5 +1,10 @@
 Revision history for Perl extension DBIx::Simple::Inject
 
+0.03  Dec  2 12:44:45 JST 2011
+        - add SQL::Abstract to requires.
+          You can change "abstract" class, but DBIx::Simple code calls SQL::Abstract.
+          (this is lvalue limitation I think)
+
 0.02  Wed Nov 30 16:17:59 JST 2011
         - first CPAN release
 

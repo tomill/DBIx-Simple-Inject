@@ -5,6 +5,7 @@ readme_from;
 requires 'Class::Load';
 requires 'DBI';
 requires 'DBIx::Simple';
+requires 'SQL::Abstract'; # because lvalue sucks. you can change "abstract" class
 requires 'Scalar::Util';
 requires 'parent';
 
