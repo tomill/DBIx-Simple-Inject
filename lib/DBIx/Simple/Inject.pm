@@ -51,12 +51,12 @@ sub _abstract {
             error
             query
             begin
-            disconnect
             select insert update delete
             iquery
         ),
         # unnecessary begin_work(), commit(), rollback(), func() and last_insert_id()
-        # there are just alias for DBI::db::*
+        # there are just alias for DBI::db::*.
+        # DBIx::Simple has disconnect(), but it does not need when using DBIx::Simple as DBI
     ) {
         *$method = sub {
             use strict 'refs';
